@@ -1,0 +1,10 @@
+services:
+  zencode-postgres:
+    image: postgres:latest
+    container_name: zencode_db
+    environment:
+      POSTGRES_DB: zencode_db
+      POSTGRES_USER: zencode_user
+      POSTGRES_PASSWORD: zencode_password
+    ports:
+      - "5439:5432"
