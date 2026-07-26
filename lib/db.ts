@@ -2,8 +2,9 @@
 // and will be in use.
 
 import {getPrismaClient} from "@prisma/client/runtime/client";
-import {PrismaPg} from "@prisma/adapter-pg"
-import {PrismaClient} from "@prisma/client/extension";
+import { PrismaClient } from "@/lib/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
 const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined
