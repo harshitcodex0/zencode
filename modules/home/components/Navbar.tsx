@@ -43,11 +43,11 @@ export const Navbar = ({ userRole }: any) => {
                         <Show when={"signed-in"}>
                             {
                                 userRole && userRole === UserRole.ADMIN && (
-                                    <Link href={"/create-problem"}>
-                                        <Button variant={"outline"} size={"default"}>
+                                    <Button variant={"outline"} size={"default"} asChild>
+                                        <Link href={"/create-problem"}>
                                             Create Problem
-                                        </Button>
-                                    </Link>
+                                        </Link>
+                                    </Button>
                                 )
                             }
                             <UserButton />

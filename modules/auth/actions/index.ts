@@ -79,9 +79,6 @@ export const getCurrentUserData = async () => {
         const data = await prisma.user.findUnique({
             where: {
                 clerkId:user.id
-            },
-            select:{
-
             }
         })
         return data;
