@@ -56,27 +56,36 @@ export async function POST(request: NextRequest) {
         }
 
         for (const [language, solutionCode] of Object.entries(referenceSolutions)) {
-            // 1.get judge0 language id for current lang
+            // 1. Get judge0 language id for current lang
             const languageId = getJudge0languageId(language);
 
-            // 2. prepare judge0 submissions for all test cases
-
+            // 2. Prepare judge0 submissions for all test cases
             const submissions = testCases.map(({ input, output }) => ({
                 source_code: solutionCode,
                 language_id: languageId,
                 stdin: input,
                 expected_output: output,
             }));
-            // 3. Submit all testcases in one batch
 
-            const submissionResults = await submitBatch(submissions);
-            // 4. Extract tokens from response
-            const tokens = submissionResults.map((res: any) => res.token);
+            // 3. Submit all test cases in one batch
+            const rawResults = await submitBatch(submissions);
+
+            // 4. Safely extract tokens (handles both string array and object array)
+            const tokens: string[] = Array.isArray(rawResults)
+                ? rawResults.map((res: any) => (typeof res === "string" ? res : res.token)).filter(Boolean)
+                : [];
+
+            if (tokens.length === 0) {
+                return NextResponse.json(
+                    { error: `Failed to retrieve execution tokens from Judge0 for ${language}` },
+                    { status: 500 }
+                );
+            }
 
             // 5. Poll judge0 until all submissions are done
             const results = await pollBatchResults(tokens);
-            // 6. validate that each test cases
 
+            // 6. Validate each test case (Status ID 3 = Accepted)
             for (let i = 0; i < results.length; i++) {
                 const result = results[i];
 
@@ -88,7 +97,7 @@ export async function POST(request: NextRequest) {
                                 input: submissions[i].stdin,
                                 expectedOutput: submissions[i].expected_output,
                                 actualOutput: result.stdout,
-                                error: result.stderr || result.compile_output,
+                                error: result.stderr || result.compile_output || result.message,
                             },
                             details: result,
                         },
@@ -109,7 +118,7 @@ export async function POST(request: NextRequest) {
                 testCases,
                 codeSnippets,
                 referenceSolutions,
-                //   @ts-ignore
+                // @ts-ignore
                 userId: user.id,
             },
         });
@@ -122,10 +131,10 @@ export async function POST(request: NextRequest) {
             },
             { status: 201 },
         );
-    } catch (error) {
-        console.error("Database error:", error);
+    } catch (error: any) {
+        console.error("Database or Judge0 error:", error);
         return NextResponse.json(
-            { error: "Failed to save problem to database" },
+            { error: error.message || "Failed to save problem to database" },
             { status: 500 },
         );
     }

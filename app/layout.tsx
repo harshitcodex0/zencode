@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 // import {ThemeProvider} from "next-themes";
 import {ThemeProvider} from "@/providers/theme-providers";
+import {Toaster} from "@/components/ui/sonner";
 
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
@@ -41,6 +42,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
+          <Toaster/>
           {children}
         </ThemeProvider>
         
