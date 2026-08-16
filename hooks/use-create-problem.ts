@@ -48,9 +48,9 @@ export function useCreateProblem() {
                 router.push("/problems");
             }
         } catch (error) {
-            console.error("Error creating problem:", error);
+            console.error("Error creating problems:", error);
             // @ts-ignore
-            toast.error(error.message || "Failed to create problem");
+            toast.error(error.message || "Failed to create problems");
         } finally {
             setIsLoading(false);
         }

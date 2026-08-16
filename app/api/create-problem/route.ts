@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
     } catch (error: any) {
         console.error("Database or Judge0 error:", error);
         return NextResponse.json(
-            { error: error.message || "Failed to save problem to database" },
+            { error: error.message || "Failed to save problems to database" },
             { status: 500 },
         );
     }

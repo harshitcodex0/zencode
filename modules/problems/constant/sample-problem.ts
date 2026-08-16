@@ -8,7 +8,7 @@ export const sampleDPProblem = {
     hints:
         "To reach the nth step, you can either come from the (n-1)th step or the (n-2)th step.",
     editorial:
-        "This is a classic dynamic programming problem. The number of ways to reach the nth step is the sum of the number of ways to reach the (n-1)th step and the (n-2)th step, forming a Fibonacci-like sequence.",
+        "This is a classic dynamic programming problems. The number of ways to reach the nth step is the sum of the number of ways to reach the (n-1)th step and the (n-2)th step, forming a Fibonacci-like sequence.",
     testCases: [
         { input: "2", output: "2" },
         { input: "3", output: "3" },
@@ -118,7 +118,23 @@ for (let i = 3; i <= n; i++) {
 }
 
 return dp[n];
-}`,
+}
+
+// Parse input and execute
+const readline = require('readline');
+const rl = readline.createInterface({
+input: process.stdin,
+output: process.stdout,
+terminal: false
+});
+
+rl.on('line', (line) => {
+const n = parseInt(line.trim());
+const result = climbStairs(n);
+
+console.log(result);
+rl.close();
+});`,
         PYTHON: `class Solution:
   def climbStairs(self, n: int) -> int:
       # Base cases
@@ -133,7 +149,21 @@ return dp[n];
       for i in range(3, n + 1):
           dp[i] = dp[i - 1] + dp[i - 2]
       
-      return dp[n]`,
+      return dp[n]
+
+# Input parsing
+if __name__ == "__main__":
+  import sys
+  
+  # Parse input
+  n = int(sys.stdin.readline().strip())
+  
+  # Solve
+  sol = Solution()
+  result = sol.climbStairs(n)
+  
+  # Print result
+  print(result)`,
         JAVA: `import java.util.Scanner;
 
 class Main {
@@ -153,6 +183,18 @@ class Main {
       }
       
       return dp[n];
+  }
+  
+  public static void main(String[] args) {
+      Scanner scanner = new Scanner(System.in);
+      int n = Integer.parseInt(scanner.nextLine().trim());
+      
+      // Use Main class instead of Solution
+      Main main = new Main();
+      int result = main.climbStairs(n);
+      
+      System.out.println(result);
+      scanner.close();
   }
 }`,
     },

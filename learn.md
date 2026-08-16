@@ -649,7 +649,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { defaultFormValues, problemSchema } from "@/modules/problems/schema";
-import { SAMPLE_PROBLEMS } from "@/modules/problems/constant/sample-problem";
+import { SAMPLE_PROBLEMS } from "@/modules/problems/constant/sample-problems";
 import { z } from "zod";
 
 type ProblemFormData = z.infer<typeof problemSchema>;
@@ -693,17 +693,17 @@ export function useCreateProblem() {
                 toast.success("Problem created successfully");
                 router.push("/problems");
             } else {
-                toast.error(data.error || "Failed to create problem");
+                toast.error(data.error || "Failed to create problems");
             }
         } catch (error: any) {
-            console.error("Error creating problem:", error);
-            toast.error(error.message || "Failed to create problem");
+            console.error("Error creating problems:", error);
+            toast.error(error.message || "Failed to create problems");
         } finally {
             setIsLoading(false);
         }
     };
 
-    // 5. Pre-fill sample problem helper
+    // 5. Pre-fill sample problems helper
     const loadSampleData = () => {
         const sampleData = SAMPLE_PROBLEMS[sampleType as keyof typeof SAMPLE_PROBLEMS];
         tagsArray.replace(sampleData.tags);
@@ -940,7 +940,7 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        // 4. Save validated problem into PostgreSQL
+        // 4. Save validated problems into PostgreSQL
         const newProblem = await prisma.problem.create({
             data: {
                 title,
@@ -967,7 +967,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error("Database error:", error);
         return NextResponse.json(
-            { error: "Failed to save problem to database" },
+            { error: "Failed to save problems to database" },
             { status: 500 },
         );
     }
