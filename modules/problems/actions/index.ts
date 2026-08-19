@@ -48,13 +48,17 @@ export const getProblemById = async (id: string) => {
 };
 
 export const executeCode = async (
-    source_code,
-    language_id,
-    stdin,
-    expected_outputs,
-    id,
+    source_code: string,
+    language_id: number,
+    stdin: any[],
+    expected_outputs: any[],
+    id: string,
 ) => {
     const user = await getCurrentUserData();
+
+    if (!user || 'success' in user) {
+        return { success: false, error: "User not found" };
+    }
 
     if (
         !Array.isArray(stdin) ||
@@ -75,13 +79,13 @@ export const executeCode = async (
 
     const submitResponse = await submitBatch(submissions);
 
-    const tokens = submitResponse.map((res) => res.token);
+    const tokens = submitResponse.map((res: any) => res.token);
 
     const results = await pollBatchResults(tokens);
 
     let allPassed = true;
 
-    const detailedResults = results.map((result, i) => {
+    const detailedResults = results.map((result: any, i: number) => {
         const stdout = result.stdout?.trim() || null;
         const expected_output = expected_outputs[i]?.trim();
         const passed = stdout === expected_output;
@@ -103,24 +107,24 @@ export const executeCode = async (
 
     const submission = await prisma.submission.create({
         data: {
-            userId: user?.id,
+            userId: user.id,
             problemId: id,
             sourceCode: source_code,
             language: getLanguageName(language_id),
             stdin: stdin.join("\n"),
-            stdout: JSON.stringify(detailedResults.map((r) => r.stdout)),
-            stderr: detailedResults.some((r) => r.stderr)
-                ? JSON.stringify(detailedResults.map((r) => r.stderr))
+            stdout: JSON.stringify(detailedResults.map((r: any) => r.stdout)),
+            stderr: detailedResults.some((r: any) => r.stderr)
+                ? JSON.stringify(detailedResults.map((r: any) => r.stderr))
                 : null,
-            compileOutput: detailedResults.some((r) => r.compile_output)
-                ? JSON.stringify(detailedResults.map((r) => r.compile_output))
+            compileOutput: detailedResults.some((r: any) => r.compile_output)
+                ? JSON.stringify(detailedResults.map((r: any) => r.compile_output))
                 : null,
             status: allPassed ? "Accepted" : "Wrong Answer",
-            memory: detailedResults.some((r) => r.memory)
-                ? JSON.stringify(detailedResults.map((r) => r.memory))
+            memory: detailedResults.some((r: any) => r.memory)
+                ? JSON.stringify(detailedResults.map((r: any) => r.memory))
                 : null,
-            time: detailedResults.some((r) => r.time)
-                ? JSON.stringify(detailedResults.map((r) => r.time))
+            time: detailedResults.some((r: any) => r.time)
+                ? JSON.stringify(detailedResults.map((r: any) => r.time))
                 : null,
         },
     });
@@ -128,18 +132,18 @@ export const executeCode = async (
     if (allPassed) {
         await prisma.problemSolved.upsert({
             where: {
-                userId_problemId: { userId: user?.id, problemId: id },
+                userId_problemId: { userId: user.id, problemId: id },
             },
 
             update: {},
             create: {
-                userId: user?.id,
+                userId: user.id,
                 problemId: id,
             },
         });
     }
 
-    const testCaseResults = detailedResults.map((result) => ({
+    const testCaseResults = detailedResults.map((result: any) => ({
         submissionId: submission.id,
         testCase: result.testCase,
         passed: result.passed,
@@ -172,10 +176,14 @@ export const getAllSubmissionByCurrentUserForProblem = async (
 ) => {
     const user = await getCurrentUserData();
 
+    if (!user || 'success' in user) {
+        return { success: false, data: [] };
+    }
+
     const submissions = await prisma.submission.findMany({
         where: {
             problemId: problemId,
-            userId: user?.id,
+            userId: user.id,
         },
     });
 
