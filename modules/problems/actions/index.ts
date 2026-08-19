@@ -11,9 +11,9 @@ export const getAllProblems = async () => {
         const user = await getCurrentUserData();
 
         const problems = await prisma.problem.findMany({
-            // include:{
-            //     solvedBy:true
-            // },
+            include:{
+                solvedBy:true
+            },
             orderBy: {
                 createdAt: "desc",
             },
@@ -180,22 +180,7 @@ export const getAllSubmissionByCurrentUserForProblem = async (
     });
 
     return {
+        success: true,
         data: submissions,
     };
 };
-
-
-
-// export const executeCode = async (
-//     source_code: any,
-//     language_id: any,
-//     stdin: any,
-//     expected_outputs: any,
-//     id: any,
-// ) => {
-//     return { success: true, submission: null };
-// };
-
-// export const getAllSubmissionByCurrentUserForProblem = async (problemId: string) => {
-//     return { success: true, data: [] };
-// };
