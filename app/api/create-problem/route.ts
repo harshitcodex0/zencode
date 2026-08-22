@@ -14,8 +14,8 @@ export async function POST(request: NextRequest) {
         const userRole = await currentUserRole();
         const user = await getCurrentUserData();
 
-        if (!user) {
-            return NextResponse.json({ error: "User not found" });
+        if (!user || 'success' in user) {
+            return NextResponse.json({ error: "User not found" }, { status: 401 });
         }
 
         if (userRole !== UserRole.ADMIN) {
@@ -33,6 +33,13 @@ export async function POST(request: NextRequest) {
             codeSnippets,
             referenceSolutions,
         } = await request.json();
+
+        if (title && title.length > 200) {
+            return NextResponse.json({ error: "Title is too long (max 200)." }, { status: 400 });
+        }
+        if (description && description.length > 20000) {
+            return NextResponse.json({ error: "Description is too long (max 20000)." }, { status: 400 });
+        }
 
         if (
             !title ||
@@ -61,7 +68,7 @@ export async function POST(request: NextRequest) {
 
             // 2. Prepare judge0 submissions for all test cases
             const submissions = testCases.map(({ input, output }) => ({
-                source_code: solutionCode,
+                source_code: String(solutionCode),
                 language_id: languageId,
                 stdin: input,
                 expected_output: output,
@@ -72,7 +79,7 @@ export async function POST(request: NextRequest) {
 
             // 4. Safely extract tokens (handles both string array and object array)
             const tokens: string[] = Array.isArray(rawResults)
-                ? rawResults.map((res: any) => (typeof res === "string" ? res : res.token)).filter(Boolean)
+                ? rawResults.map((res: { token?: string } | string) => (typeof res === "string" ? res : res.token)).filter((t): t is string => Boolean(t))
                 : [];
 
             if (tokens.length === 0) {
@@ -118,7 +125,6 @@ export async function POST(request: NextRequest) {
                 testCases,
                 codeSnippets,
                 referenceSolutions,
-                // @ts-ignore
                 userId: user.id,
             },
         });
@@ -131,10 +137,10 @@ export async function POST(request: NextRequest) {
             },
             { status: 201 },
         );
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Database or Judge0 error:", error);
         return NextResponse.json(
-            { error: error.message || "Failed to save problems to database" },
+            { error: error instanceof Error ? error.message : "Failed to save problems to database" },
             { status: 500 },
         );
     }

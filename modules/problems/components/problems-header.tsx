@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 
-export function ProblemsHeader({ onCreatePlaylist }:any) {
+export function ProblemsHeader({ onCreatePlaylist }: { onCreatePlaylist: () => void }) {
 
     console.log(onCreatePlaylist)
 

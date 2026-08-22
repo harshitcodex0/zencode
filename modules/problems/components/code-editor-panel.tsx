@@ -13,6 +13,17 @@ import { EDITOR_OPTIONS, getEditorLanguage, LANGUAGE_OPTIONS } from "../constant
 import { Editor } from "@monaco-editor/react";
 import { Button } from "@/components/ui/button";
 
+interface CodeEditorPanelProps {
+    code: string;
+    onCodeChange: (value: string) => void;
+    selectedLanguage: string;
+    onLanguageChange: (lang: string) => void;
+    onRun: () => void;
+    onSubmit: () => void;
+    isRunning: boolean;
+    isSubmitting: boolean;
+}
+
 const CodeEditorPanel = ({
                              code,
                              onCodeChange,
@@ -22,7 +33,7 @@ const CodeEditorPanel = ({
                              onSubmit,
                              isRunning,
                              isSubmitting,
-                         }: any) => {
+                         }: CodeEditorPanelProps) => {
     const { theme } = useTheme();
 
     return (
@@ -54,10 +65,10 @@ const CodeEditorPanel = ({
                         height={"400px"}
                         language={getEditorLanguage(selectedLanguage)}
                         value={code}
-                        // @ts-ignore
+                        // @ts-expect-error some error
                         onChange={(value:string)=>onCodeChange(value || "")}
                         theme={theme === "dark" ? "vs-dark":"light"}
-                        // @ts-ignore
+                        // @ts-expect-error some error
                         options={EDITOR_OPTIONS}
                     />
                 </div>

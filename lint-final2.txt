@@ -1,0 +1,168 @@
+
+> zen-code@0.1.0 lint D:\ALL-Projects\the-zenith-company\zen-code
+> eslint
+
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\(root)\about\page.tsx
+   32:57   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   32:87   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   32:96   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   32:107  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   93:77   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  102:25   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  102:29   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  103:120  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\(root)\page.tsx
+  1:8   warning  'Image' is defined but never used       @typescript-eslint/no-unused-vars
+  3:10  warning  'UserButton' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\api\playlist\route.ts
+  5:27  warning  'request' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\layout.tsx
+  5:25  warning  'Show' is defined but never used          @typescript-eslint/no-unused-vars
+  5:31  warning  'SignInButton' is defined but never used  @typescript-eslint/no-unused-vars
+  5:45  warning  'SignUpButton' is defined but never used  @typescript-eslint/no-unused-vars
+  5:59  warning  'UserButton' is defined but never used    @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\problem\[id]\page.tsx
+   6:10  warning  'ProblemsHeader' is defined but never used                                                                                                                     @typescript-eslint/no-unused-vars
+  71:26  error    Include a description after the "@ts-expect-error" directive to explain why the @ts-expect-error is necessary. The description must be 3 characters or longer  @typescript-eslint/ban-ts-comment
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ai-assistant.tsx
+   7:10  warning  'MessageSquare' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   7:39  warning  'User' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  43:40  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ai-assistant.tsx:43:40
+  41 |         if (!content.trim() || isLoading) return;
+  42 |
+> 43 |         const userMsg: Message = { id: Date.now().toString(), role: 'user', content: content.trim() };
+     |                                        ^^^^^^^^^^ Cannot call impure function
+  44 |         setMessages(prev => [...prev, userMsg]);
+  45 |         setInputValue('');
+  46 |         setIsLoading(true);  react-hooks/purity
+  48:26  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ai-assistant.tsx:48:26
+  46 |         setIsLoading(true);
+  47 |
+> 48 |         const aiMsgId = (Date.now() + 1).toString();
+     |                          ^^^^^^^^^^ Cannot call impure function
+  49 |         setMessages(prev => [...prev, { id: aiMsgId, role: 'assistant', content: '' }]);
+  50 |
+  51 |         try {                                                                                         react-hooks/purity
+  90:33  error    Error: This value cannot be modified
+
+This modifies a variable that React considers immutable.
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ai-assistant.tsx:90:33
+  88 |                             const parsed = JSON.parse(line.slice(6));
+  89 |                             if (parsed.choices?.[0]?.delta?.content) {
+> 90 |                                 aiText += parsed.choices[0].delta.content;
+     |                                 ^^^^^^ `aiText` cannot be modified
+  91 |                                 setMessages(prev => 
+  92 |                                     prev.map(msg => 
+  93 |                                         msg.id === aiMsgId ? { ...msg, content: aiText } : msg                                                                            react-hooks/immutability
+  97:34  warning  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ui\carousel.tsx
+  98:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ui\carousel.tsx:98:5
+   96 |   React.useEffect(() => {
+   97 |     if (!api) return
+>  98 |     onSelect(api)
+      |     ^^^^^^^^ Avoid calling setState() directly within an effect
+   99 |     api.on("reInit", onSelect)
+  100 |     api.on("select", onSelect)
+  101 |  react-hooks/set-state-in-effect
+
+D:\ALL-Projects\the-zenith-company\zen-code\fix-any.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+D:\ALL-Projects\the-zenith-company\zen-code\hooks\use-mobile.ts
+  14:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\ALL-Projects\the-zenith-company\zen-code\hooks\use-mobile.ts:14:5
+  12 |     }
+  13 |     mql.addEventListener("change", onChange)
+> 14 |     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+     |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  15 |     return () => mql.removeEventListener("change", onChange)
+  16 |   }, [])
+  17 |  react-hooks/set-state-in-effect
+
+D:\ALL-Projects\the-zenith-company\zen-code\lib\db.ts
+  4:9  warning  'getPrismaClient' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\lib\judge0.ts
+  32:10  warning  'toBase64' is defined but never used    @typescript-eslint/no-unused-vars
+  37:10  warning  'fromBase64' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\auth\actions\index.ts
+   4:9   warning  'DbNull' is defined but never used  @typescript-eslint/no-unused-vars
+  65:14  warning  'e' is defined but never used       @typescript-eslint/no-unused-vars
+  85:13  warning  'error' is defined but never used   @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\playlists\components\add-to-playlist.tsx
+  13:16  warning  'Check' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\actions\index.ts
+   3:10  warning  'UserRole' is defined but never used       @typescript-eslint/no-unused-vars
+   6:10  warning  'currentUser' is defined but never used    @typescript-eslint/no-unused-vars
+   7:10  warning  'success' is defined but never used        @typescript-eslint/no-unused-vars
+  11:15  warning  'user' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\create-problem-form\form-header.tsx
+  5:10  warning  'Separator' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\create-problem-form\test-cases-section.tsx
+  8:46  warning  'FieldArrayWithId' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problem-description.tsx
+  27:29  error  Missing "key" prop for element in iterator  react/jsx-key
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problems-table.tsx
+  10:10  warning  'toast' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\hooks\use-editor.ts
+  11:26  warning  'setIsSubmitting' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  16:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\hooks\use-editor.ts:16:13
+  14 |     useEffect(() => {
+  15 |         if (problem?.codeSnippets?.[selectedLanguage]) {
+> 16 |             setCode(problem?.codeSnippets?.[selectedLanguage]);
+     |             ^^^^^^^ Avoid calling setState() directly within an effect
+  17 |         }
+  18 |     }, [selectedLanguage, problem]);
+  19 |  react-hooks/set-state-in-effect
+
+Γ£û 44 problems (18 errors, 26 warnings)
+
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

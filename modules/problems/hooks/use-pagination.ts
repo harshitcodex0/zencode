@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { ITEMS_PER_PAGE } from "../constant";
 
 
-export function usePagination(items: any[] = [], itemsPerPage = ITEMS_PER_PAGE) {
+export function usePagination(items: unknown[] = [], itemsPerPage = ITEMS_PER_PAGE) {
     const [currentPage , setCurrentPage] = useState(1);
 
     const totalPages = Math.ceil(items.length / itemsPerPage);

@@ -148,3 +148,13 @@ model ProblemInPlaylist {
   playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
   problem  Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
 }
+
+model RateLimit {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  window    DateTime
+  count     Int      @default(1)
+
+  @@unique([userId, action, window])
+}

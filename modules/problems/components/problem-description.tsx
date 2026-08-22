@@ -3,7 +3,7 @@ import { FileText } from "lucide-react";
 import { ExampleSection } from "./example-section";
 import { ConstraintsSection } from "./constraint-section";
 
-export function ProblemDescription({ problem }: any) {
+export function ProblemDescription({ problem, selectedLanguage }: { problem: any; selectedLanguage?: string }) {
 
     console.log(problem?.examples)
 
@@ -22,9 +22,8 @@ export function ProblemDescription({ problem }: any) {
                         {problem?.description}
                     </p>
                     {
-                        Object.values(problem?.examples).map((example:any , index:number)=>(
-
-                            <ExampleSection example={example} index={index}/>
+                        (Object.values(problem?.examples || {}) as { input: string; output: string; explanation?: string }[]).map((example, index)=>(
+                            <ExampleSection key={index} example={example} index={index}/>
                         ))
                     }
                     <ConstraintsSection constraints={problem?.constraints}/>

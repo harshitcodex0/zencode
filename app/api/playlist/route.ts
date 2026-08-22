@@ -58,9 +58,16 @@ export async function POST(request: NextRequest) {
 
         const { name, description } = await request.json();
 
-        if (!name) {
+        if (!name || typeof name !== 'string' || name.length > 100) {
             return NextResponse.json(
-                { success: false, error: "Name is required" },
+                { success: false, error: "Name is required and must be under 100 characters" },
+                { status: 400 },
+            );
+        }
+
+        if (description && (typeof description !== 'string' || description.length > 500)) {
+            return NextResponse.json(
+                { success: false, error: "Description must be under 500 characters" },
                 { status: 400 },
             );
         }

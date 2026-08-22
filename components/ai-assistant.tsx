@@ -22,7 +22,7 @@ const SUGGESTED_PROMPTS = [
     "Explain time complexity of merge sort"
 ];
 
-export const AIAssistant = ({ problemContext }: { problemContext?: any }) => {
+export const AIAssistant = ({ problemContext }: { problemContext?: unknown }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
@@ -100,9 +100,10 @@ export const AIAssistant = ({ problemContext }: { problemContext?: any }) => {
                     }
                 }
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("AI Error:", error);
-            toast.error(error.message || "Failed to communicate with AI.");
+            const msg = error instanceof Error ? error.message : "Failed to communicate with AI.";
+            toast.error(msg);
             setMessages(prev => {
                 const last = prev[prev.length - 1];
                 if (last.id === aiMsgId && !last.content) {
@@ -181,26 +182,27 @@ export const AIAssistant = ({ problemContext }: { problemContext?: any }) => {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="space-y-4 pb-4 w-full overflow-x-hidden">
+                                /* Key fix: w-full + overflow-hidden prevents inner content from busting out */
+                                <div className="space-y-4 pb-4 w-full overflow-hidden">
                                     {messages.map((msg) => (
                                         <div
                                             key={msg.id}
-                                            className={`flex gap-3 w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                            className={`flex gap-2 w-full min-w-0 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                         >
                                             {msg.role === 'assistant' && (
-                                                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0 mt-1">
-                                                    <Bot className="w-4 h-4 text-amber-600" />
+                                                <div className="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0 mt-1">
+                                                    <Bot className="w-3.5 h-3.5 text-amber-600" />
                                                 </div>
                                             )}
                                             <div
-                                                className={`px-4 py-3 rounded-2xl max-w-[85%] text-sm min-w-0 ${
+                                                className={`px-3 py-2.5 rounded-2xl text-sm min-w-0 overflow-hidden ${
                                                     msg.role === 'user'
-                                                        ? 'bg-amber-500 text-white rounded-tr-sm'
-                                                        : 'bg-muted rounded-tl-sm border'
+                                                        ? 'max-w-[80%] bg-amber-500 text-white rounded-tr-sm'
+                                                        : 'flex-1 min-w-0 bg-muted rounded-tl-sm border overflow-hidden'
                                                 }`}
                                             >
                                                 {msg.role === 'user' ? (
-                                                    <div className="whitespace-pre-wrap break-words">{msg.content}</div>
+                                                    <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                                                 ) : (
                                                     !msg.content ? (
                                                         <div className="flex items-center gap-2 text-muted-foreground h-5">
@@ -208,7 +210,17 @@ export const AIAssistant = ({ problemContext }: { problemContext?: any }) => {
                                                             <span className="text-xs">Thinking...</span>
                                                         </div>
                                                     ) : (
-                                                        <div className="prose prose-sm dark:prose-invert prose-p:leading-relaxed prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800 max-w-full break-words prose-pre:overflow-x-auto">
+                                                        <div className="prose prose-sm dark:prose-invert w-full min-w-0 overflow-hidden
+                                                            prose-p:leading-relaxed prose-p:my-1 prose-p:break-words
+                                                            prose-headings:my-2
+                                                            prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5
+                                                            prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800
+                                                            prose-pre:overflow-x-auto prose-pre:max-w-full prose-pre:my-2
+                                                            prose-code:break-words
+                                                            prose-strong:text-foreground
+                                                            prose-table:block prose-table:overflow-x-auto prose-table:max-w-full prose-table:text-xs
+                                                            [&>*]:max-w-full
+                                                        ">
                                                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                                 {msg.content}
                                                             </ReactMarkdown>

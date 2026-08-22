@@ -40,7 +40,14 @@ function fromBase64(str: string = ''): string {
 
 
 
-export async function submitBatch(submissions: any) {
+export interface SubmissionPayload {
+    source_code: string;
+    language_id: number;
+    stdin?: string;
+    expected_output?: string;
+}
+
+export async function submitBatch(submissions: SubmissionPayload[]) {
     const options = {
         method: "POST",
         url: `https://${API_HOST}/submissions/batch`,
@@ -65,7 +72,10 @@ export async function submitBatch(submissions: any) {
 
 
 export async function pollBatchResults(tokens: string[]) {
-    while (true) {
+    let retries = 0;
+    const MAX_RETRIES = 30; // 30 seconds max timeout
+
+    while (retries < MAX_RETRIES) {
         const options = {
             method: "GET",
             url: `https://${API_HOST}/submissions/batch`,
@@ -86,14 +96,16 @@ export async function pollBatchResults(tokens: string[]) {
         const results = data.submissions;
 
         const isAllDone = results.every(
-            (r:any)=>r.status.id !==1 && r.status.id !==2
+            (r: { status: { id: number } }) => r.status.id !== 1 && r.status.id !== 2
         );
 
         if(isAllDone) return results;
 
-        await sleep(1000)
+        await sleep(1000);
+        retries++;
     }
 
+    throw new Error("Judge0 execution timed out after 30 seconds.");
 }
 
 

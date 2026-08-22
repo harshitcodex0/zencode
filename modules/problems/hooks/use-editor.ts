@@ -9,10 +9,11 @@ export function useEditor(problem: any, initialLanguage = "JAVASCRIPT") {
     const [code, setCode] = useState("");
     const [isRunning, setIsRunning] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [executionResponse, setExecutionResponse] = useState<any>(null);
+    const [executionResponse, setExecutionResponse] = useState<unknown>(null);
 
     useEffect(() => {
         if (problem?.codeSnippets?.[selectedLanguage]) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setCode(problem?.codeSnippets?.[selectedLanguage]);
         }
     }, [selectedLanguage, problem]);

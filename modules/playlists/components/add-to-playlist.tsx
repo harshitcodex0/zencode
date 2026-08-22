@@ -10,12 +10,20 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, Check } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
+type Playlist = { id: string; name: string; description?: string | null };
 
-const AddToPlaylistModal = ({isOpen , onClose , onSubmit , problemId}:any)=>{
-    const [playlists, setPlaylists] = useState<any[]>([]);
+interface AddToPlaylistModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSubmit: (problemId: string, playlistId: string) => Promise<void>;
+    problemId: string;
+}
+
+const AddToPlaylistModal = ({ isOpen, onClose, onSubmit, problemId }: AddToPlaylistModalProps) => {
+    const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(()=>{

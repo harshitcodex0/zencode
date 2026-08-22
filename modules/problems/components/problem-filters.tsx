@@ -24,7 +24,15 @@ export function ProblemsFilters({
                                     selectedTag,
                                     onTagChange,
                                     allTags = [],
-                                }:any) {
+                                }: {
+                                    search: string;
+                                    onSearchChange: (val: string) => void;
+                                    difficulty: string;
+                                    onDifficultyChange: (val: string) => void;
+                                    selectedTag: string;
+                                    onTagChange: (val: string) => void;
+                                    allTags?: string[];
+                                }) {
     return (
         <Card>
             <CardHeader>
@@ -61,7 +69,7 @@ export function ProblemsFilters({
 /**
  * Search input with icon
  */
-function SearchInput({ value, onChange }: any) {
+function SearchInput({ value, onChange }: { value: string; onChange: (val: string) => void }) {
     return (
         <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -78,7 +86,7 @@ function SearchInput({ value, onChange }: any) {
 /**
  * Difficulty filter dropdown
  */
-function DifficultySelect({ value, onChange }: any) {
+function DifficultySelect({ value, onChange }: { value: string; onChange: (val: string) => void }) {
     return (
         <Select value={value} onValueChange={onChange}>
             <SelectTrigger className="w-[180px]">
@@ -99,7 +107,7 @@ function DifficultySelect({ value, onChange }: any) {
 /**
  * Tag filter dropdown
  */
-function TagSelect({ value, onChange, tags }: any) {
+function TagSelect({ value, onChange, tags }: { value: string; onChange: (val: string) => void; tags: string[] }) {
     return (
         <Select value={value} onValueChange={onChange}>
             <SelectTrigger className="w-[180px]">
@@ -107,7 +115,7 @@ function TagSelect({ value, onChange, tags }: any) {
             </SelectTrigger>
             <SelectContent>
                 <SelectItem value="ALL">All Tags</SelectItem>
-                {tags.map((tag: any) => (
+                {tags.map((tag: string) => (
                     <SelectItem key={tag} value={tag}>
                         {tag}
                     </SelectItem>

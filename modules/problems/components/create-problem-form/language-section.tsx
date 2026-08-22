@@ -10,7 +10,7 @@ import { LANGUAGES } from "../../schema";
 import { CodeEditor } from "./code-editor";
 
 
-export function LanguageSections({ form }: any) {
+export function LanguageSections({ form }: { form: any }) {
     return (
         <>
             {LANGUAGES.map((language) => (
@@ -20,7 +20,7 @@ export function LanguageSections({ form }: any) {
     );
 }
 
-function LanguageCard({ language, form }: any) {
+function LanguageCard({ language, form }: { language: string; form: any }) {
     const {
         control,
         register,
@@ -56,7 +56,7 @@ function LanguageCard({ language, form }: any) {
     );
 }
 
-function StarterCodeEditor({ language, control, error }: any) {
+function StarterCodeEditor({ language, control, error }: { language: string; control: any; error?: any }) {
     return (
         <Card>
             <CardHeader>
@@ -70,7 +70,7 @@ function StarterCodeEditor({ language, control, error }: any) {
                         <CodeEditor
                             value={field.value}
                             onChange={field.onChange}
-                            language={language.toLowerCase()}
+                            language={language.toLowerCase() as "javascript" | "python" | "java"}
                         />
                     )}
                 />
@@ -82,7 +82,7 @@ function StarterCodeEditor({ language, control, error }: any) {
     );
 }
 
-function ReferenceSolutionEditor({ language, control, error }: any) {
+function ReferenceSolutionEditor({ language, control, error }: { language: string; control: any; error?: any }) {
     return (
         <Card>
             <CardHeader>
@@ -99,7 +99,7 @@ function ReferenceSolutionEditor({ language, control, error }: any) {
                         <CodeEditor
                             value={field.value}
                             onChange={field.onChange}
-                            language={language.toLowerCase()}
+                            language={language.toLowerCase() as "javascript" | "python" | "java"}
                         />
                     )}
                 />
@@ -111,7 +111,7 @@ function ReferenceSolutionEditor({ language, control, error }: any) {
     );
 }
 
-function ExampleFields({ language, register, errors }: any) {
+function ExampleFields({ language, register, errors }: { language: string; register: any; errors: any }) {
     return (
         <Card>
             <CardHeader>

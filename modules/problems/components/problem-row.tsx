@@ -11,7 +11,7 @@ import { getDifficultyColor } from "../constant";
 /**
  * Single row in the problems table
  */
-export function ProblemRow({ problem, user, onDelete, onSave }: any) {
+export function ProblemRow({ problem, user, onDelete, onSave }: { problem: any; user: any; onDelete: (id: string) => void; onSave: (id: string) => void }) {
     const isSolved = problem.solvedBy?.length > 0;
 
     return (
@@ -52,7 +52,7 @@ export function ProblemRow({ problem, user, onDelete, onSave }: any) {
 /**
  * Checkbox showing if problem is solved
  */
-function SolvedCheckbox({ checked }: any) {
+function SolvedCheckbox({ checked }: { checked: boolean }) {
     return (
         <Checkbox
             checked={checked}
@@ -65,7 +65,7 @@ function SolvedCheckbox({ checked }: any) {
 /**
  * Problem title with link to problem page
  */
-function ProblemTitle({ id, title }: any) {
+function ProblemTitle({ id, title }: { id: string; title: string }) {
     return (
         <Link
             href={`/problem/${id}`}
@@ -79,10 +79,10 @@ function ProblemTitle({ id, title }: any) {
 /**
  * List of tag badges
  */
-function TagsList({ tags = [] }: any) {
+function TagsList({ tags = [] }: { tags: string[] }) {
     return (
         <div className="flex flex-wrap gap-1">
-            {tags.map((tag: any, idx: number) => (
+            {tags.map((tag: string, idx: number) => (
                 <Badge
                     key={idx}
                     variant="outline"
@@ -98,7 +98,7 @@ function TagsList({ tags = [] }: any) {
 /**
  * Difficulty badge with color
  */
-function DifficultyBadge({ difficulty }: any) {
+function DifficultyBadge({ difficulty }: { difficulty: "EASY" | "MEDIUM" | "HARD" }) {
     return (
         <Badge className={`${getDifficultyColor(difficulty)} border-0 font-medium`}>
             {difficulty}
@@ -109,7 +109,7 @@ function DifficultyBadge({ difficulty }: any) {
 /**
  * Action buttons (delete, edit, save to playlist)
  */
-function ActionButtons({ problemId, isAdmin, onDelete, onSave }: any) {
+function ActionButtons({ problemId, isAdmin, onDelete, onSave }: { problemId: string; isAdmin: boolean; onDelete: (id: string) => void; onSave: (id: string) => void }) {
     return (
         <div className="flex items-center gap-2">
             {isAdmin && (

@@ -1,0 +1,347 @@
+
+> zen-code@0.1.0 lint D:\ALL-Projects\the-zenith-company\zen-code
+> eslint
+
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\(root)\about\page.tsx
+   32:57   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   32:87   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   32:96   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   32:107  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   93:77   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  102:25   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  102:29   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  103:120  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\(root)\page.tsx
+  1:8   warning  'Image' is defined but never used       @typescript-eslint/no-unused-vars
+  3:10  warning  'UserButton' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\api\assistant\route.ts
+  55:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  91:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\api\create-problem\route.ts
+   75:40  error  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  121:17  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  134:21  error  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\api\playlist\route.ts
+  5:27  warning  'request' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\layout.tsx
+  5:25  warning  'Show' is defined but never used          @typescript-eslint/no-unused-vars
+  5:31  warning  'SignInButton' is defined but never used  @typescript-eslint/no-unused-vars
+  5:45  warning  'SignUpButton' is defined but never used  @typescript-eslint/no-unused-vars
+  5:59  warning  'UserButton' is defined but never used    @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\app\problem\[id]\page.tsx
+   6:10  warning  'ProblemsHeader' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+  71:26  error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ai-assistant.tsx
+    7:10  warning  'MessageSquare' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+    7:39  warning  'User' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+   25:68  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-explicit-any
+   43:40  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ai-assistant.tsx:43:40
+  41 |         if (!content.trim() || isLoading) return;
+  42 |
+> 43 |         const userMsg: Message = { id: Date.now().toString(), role: 'user', content: content.trim() };
+     |                                        ^^^^^^^^^^ Cannot call impure function
+  44 |         setMessages(prev => [...prev, userMsg]);
+  45 |         setInputValue('');
+  46 |         setIsLoading(true);  react-hooks/purity
+   48:26  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ai-assistant.tsx:48:26
+  46 |         setIsLoading(true);
+  47 |
+> 48 |         const aiMsgId = (Date.now() + 1).toString();
+     |                          ^^^^^^^^^^ Cannot call impure function
+  49 |         setMessages(prev => [...prev, { id: aiMsgId, role: 'assistant', content: '' }]);
+  50 |
+  51 |         try {                                                                                         react-hooks/purity
+   90:33  error    Error: This value cannot be modified
+
+This modifies a variable that React considers immutable.
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ai-assistant.tsx:90:33
+  88 |                             const parsed = JSON.parse(line.slice(6));
+  89 |                             if (parsed.choices?.[0]?.delta?.content) {
+> 90 |                                 aiText += parsed.choices[0].delta.content;
+     |                                 ^^^^^^ `aiText` cannot be modified
+  91 |                                 setMessages(prev => 
+  92 |                                     prev.map(msg => 
+  93 |                                         msg.id === aiMsgId ? { ...msg, content: aiText } : msg                                                                            react-hooks/immutability
+   97:34  warning  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  103:25  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ui\carousel.tsx
+  98:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\ALL-Projects\the-zenith-company\zen-code\components\ui\carousel.tsx:98:5
+   96 |   React.useEffect(() => {
+   97 |     if (!api) return
+>  98 |     onSelect(api)
+      |     ^^^^^^^^ Avoid calling setState() directly within an effect
+   99 |     api.on("reInit", onSelect)
+  100 |     api.on("select", onSelect)
+  101 |  react-hooks/set-state-in-effect
+
+D:\ALL-Projects\the-zenith-company\zen-code\hooks\use-create-problem.ts
+  31:25  error  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  32:11  error  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  52:13  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  65:34  error  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\hooks\use-mobile.ts
+  14:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\ALL-Projects\the-zenith-company\zen-code\hooks\use-mobile.ts:14:5
+  12 |     }
+  13 |     mql.addEventListener("change", onChange)
+> 14 |     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+     |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  15 |     return () => mql.removeEventListener("change", onChange)
+  16 |   }, [])
+  17 |  react-hooks/set-state-in-effect
+
+D:\ALL-Projects\the-zenith-company\zen-code\lib\db.ts
+  4:9  warning  'getPrismaClient' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\lib\judge0.ts
+  32:10  warning  'toBase64' is defined but never used      @typescript-eslint/no-unused-vars
+  37:10  warning  'fromBase64' is defined but never used    @typescript-eslint/no-unused-vars
+  43:48  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  92:16  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\auth\actions\index.ts
+   4:9   warning  'DbNull' is defined but never used  @typescript-eslint/no-unused-vars
+  65:14  warning  'e' is defined but never used       @typescript-eslint/no-unused-vars
+  85:13  warning  'error' is defined but never used   @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\home\components\Navbar.tsx
+  8:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\playlists\components\add-to-playlist.tsx
+  13:16  warning  'Check' is defined but never used         @typescript-eslint/no-unused-vars
+  17:71  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:48  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\playlists\components\create-playlist.tsx
+  25:61  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\playlists\hooks\use-playlist-action.ts
+  10:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  30:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  54:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  61:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\actions\index.ts
+    3:10  warning  'UserRole' is defined but never used       @typescript-eslint/no-unused-vars
+    6:10  warning  'currentUser' is defined but never used    @typescript-eslint/no-unused-vars
+    7:10  warning  'success' is defined but never used        @typescript-eslint/no-unused-vars
+   11:15  warning  'user' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   53:12  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+   54:23  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+   82:45  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+   88:50  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  115:60  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  116:46  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  117:58  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  119:53  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  120:58  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  123:46  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  124:58  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  126:44  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  127:58  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+  146:58  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\code-editor-panel.tsx
+  25:29  error  Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  57:25  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  60:25  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\constraint-section.tsx
+  1:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\create-problem-form\basic-info-section.tsx
+  44:15  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  45:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  49:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  50:13  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\create-problem-form\form-header.tsx
+   5:10  warning  'Separator' is defined but never used     @typescript-eslint/no-unused-vars
+   7:73  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  37:58  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\create-problem-form\index.tsx
+  53:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\create-problem-form\language-section.tsx
+   13:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   23:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   59:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   85:64  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  114:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\create-problem-form\tags-section.tsx
+  15:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  46:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  66:15  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\create-problem-form\test-cases-section.tsx
+  8:46  warning  'FieldArrayWithId' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\example-section.tsx
+  5:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\execution-results.tsx
+  7:54  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problem-description.tsx
+   6:49  error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  25:71  error  Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+  27:29  error  Missing "key" prop for element in iterator  react/jsx-key
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problem-filters.tsx
+   27:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   64:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   81:48  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  102:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problem-header.tsx
+  9:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problem-row.tsx
+   14:65  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   55:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   68:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   82:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   85:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  101:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  112:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problem-tabs.tsx
+  8:59  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problems-header.tsx
+  7:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problems-pagination.tsx
+  16:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\problems-table.tsx
+  10:10  warning  'toast' is defined but never used         @typescript-eslint/no-unused-vars
+  22:45  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\submission-details.tsx
+   5:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   8:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   8:58  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  13:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  14:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  14:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\submit-history.tsx
+   6:73  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:54  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:62  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  29:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  35:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  35:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  42:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  61:55  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\testcase-table.tsx
+   5:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  21:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\components\testcases-panel.tsx
+   5:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  19:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  19:61  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  30:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\hooks\use-editor.ts
+   7:36  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
+  11:26  warning  'setIsSubmitting' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+  12:64  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
+  16:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\hooks\use-editor.ts:16:13
+  14 |     useEffect(() => {
+  15 |         if (problem?.codeSnippets?.[selectedLanguage]) {
+> 16 |             setCode(problem?.codeSnippets?.[selectedLanguage]);
+     |             ^^^^^^^ Avoid calling setState() directly within an effect
+  17 |         }
+  18 |     }, [selectedLanguage, problem]);
+  19 |  react-hooks/set-state-in-effect
+  30:54  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
+  31:65  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\hooks\use-pagination.ts
+  5:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\hooks\use-problem-filters.ts
+   3:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  12:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  19:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  25:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\hooks\use-problem.ts
+  16:21  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\problems\hooks\use-submission-history.tsx
+  5:64  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\profile\components\playlist-section.tsx
+   9:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  10:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  41:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\profile\components\profile-stats.tsx
+  7:97  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  8:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\profile\components\solved-problems.tsx
+   7:68  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   8:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  41:55  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\ALL-Projects\the-zenith-company\zen-code\modules\profile\components\user-info-card.tsx
+   9:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  10:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+Γ£û 161 problems (135 errors, 26 warnings)
+
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

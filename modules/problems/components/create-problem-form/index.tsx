@@ -50,7 +50,7 @@ export function CreateProblemForm() {
 
 
 
-function SubmitButton({isLoading}:any){
+function SubmitButton({isLoading}: { isLoading: boolean }){
     return (
         <div className="flex justify-end mt-6">
         <Button type="submit" size="lg" disabled={isLoading} className="gap-2">

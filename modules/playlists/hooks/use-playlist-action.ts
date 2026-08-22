@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+type PlaylistFormData = { name: string; description?: string };
+
 export function usePlaylistActions() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
         useState(false);
-    const [selectedProblemId, setSelectedProblemId] = useState(null);
+    const [selectedProblemId, setSelectedProblemId] = useState<string | null>(null);
 
-    const handleCreatePlaylist = async (data: any) => {
+    const handleCreatePlaylist = async (data: PlaylistFormData) => {
         try {
             const response = await fetch("/api/playlist", {
                 method: "POST",
@@ -27,9 +29,9 @@ export function usePlaylistActions() {
             } else {
                 throw new Error(result.error);
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error creating playlist:", error);
-            toast.error(error.message || "Failed to create playlist");
+            toast.error(error instanceof Error ? error.message : "Failed to create playlist");
             return false;
         }
     };
@@ -51,14 +53,14 @@ export function usePlaylistActions() {
             } else {
                 throw new Error(result.error);
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error adding to playlist:", error);
-            toast.error(error.message || "Failed to add problem to playlist");
+            toast.error(error instanceof Error ? error.message : "Failed to add problem to playlist");
             return false;
         }
     };
 
-    const openAddToPlaylist = (problemId: any) => {
+    const openAddToPlaylist = (problemId: string) => {
         setSelectedProblemId(problemId);
         setIsAddToPlaylistModalOpen(true);
     };

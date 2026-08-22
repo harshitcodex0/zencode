@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-export function FormHeader({ sampleType, setSampleType, onLoadSample }: any) {
+export function FormHeader({ sampleType, setSampleType, onLoadSample }: { sampleType: string; setSampleType: (val: string) => void; onLoadSample: () => void }) {
     return (
         <CardHeader className="pb-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -34,7 +34,7 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: any) {
     );
 }
 
-function SampleTypeToggle({ sampleType, setSampleType }: any) {
+function SampleTypeToggle({ sampleType, setSampleType }: { sampleType: string; setSampleType: (val: string) => void }) {
     return (
         <div className="flex border rounded-md">
             <Button

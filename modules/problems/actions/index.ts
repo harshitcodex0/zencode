@@ -47,11 +47,13 @@ export const getProblemById = async (id: string) => {
     }
 };
 
+import { checkRateLimit } from "@/lib/ratelimit";
+
 export const executeCode = async (
     source_code: string,
     language_id: number,
-    stdin: any[],
-    expected_outputs: any[],
+    stdin: string[],
+    expected_outputs: string[],
     id: string,
 ) => {
     const user = await getCurrentUserData();
@@ -60,13 +62,36 @@ export const executeCode = async (
         return { success: false, error: "User not found" };
     }
 
+    // Rate Limiting: 10 executions per minute
+    const isAllowed = await checkRateLimit(user.id, "CODE_EXECUTION", 10, 60000);
+    if (!isAllowed) {
+        return { success: false, error: "Too many submissions. Please wait a minute." };
+    }
+
+    // Payload Validation
+    if (!source_code || source_code.length > 10000) {
+        return { success: false, error: "Source code exceeds the maximum limit of 10,000 characters." };
+    }
+    
+    if (![91, 92, 93].includes(language_id)) {
+        return { success: false, error: "Unsupported language." };
+    }
+
     if (
         !Array.isArray(stdin) ||
         stdin.length === 0 ||
+        stdin.length > 50 ||
         !Array.isArray(expected_outputs) ||
         expected_outputs.length !== stdin.length
     ) {
-        return { success: false, error: "Invalid Test Cases" };
+        return { success: false, error: "Invalid or too many test cases (max 50)." };
+    }
+
+    // Validate size of individual test cases
+    for (const input of stdin) {
+        if (typeof input !== "string" || input.length > 5000) {
+            return { success: false, error: "A test case input exceeds 5000 characters." };
+        }
     }
 
     const submissions = stdin.map((input) => ({
@@ -77,17 +102,39 @@ export const executeCode = async (
         wait: false,
     }));
 
+    type Judge0Result = {
+        token: string;
+        stdout?: string | null;
+        stderr?: string | null;
+        compile_output?: string | null;
+        status: { id: number; description: string };
+        memory?: number | null;
+        time?: string | null;
+    };
+
+    type DetailedResult = {
+        testCase: number;
+        passed: boolean;
+        stdout: string | null;
+        expected: string;
+        stderr: string | null;
+        compile_output: string | null;
+        status: string;
+        memory: string | undefined;
+        time: string | undefined;
+    };
+
     const submitResponse = await submitBatch(submissions);
 
-    const tokens = submitResponse.map((res: any) => res.token);
+    const tokens = submitResponse.map((res: Judge0Result) => res.token);
 
     const results = await pollBatchResults(tokens);
 
     let allPassed = true;
 
-    const detailedResults = results.map((result: any, i: number) => {
+    const detailedResults: DetailedResult[] = results.map((result: Judge0Result, i: number) => {
         const stdout = result.stdout?.trim() || null;
-        const expected_output = expected_outputs[i]?.trim();
+        const expected_output = expected_outputs[i]?.trim() ?? "";
         const passed = stdout === expected_output;
 
         if (!passed) allPassed = false;
@@ -112,19 +159,19 @@ export const executeCode = async (
             sourceCode: source_code,
             language: getLanguageName(language_id),
             stdin: stdin.join("\n"),
-            stdout: JSON.stringify(detailedResults.map((r: any) => r.stdout)),
-            stderr: detailedResults.some((r: any) => r.stderr)
-                ? JSON.stringify(detailedResults.map((r: any) => r.stderr))
+            stdout: JSON.stringify(detailedResults.map((r) => r.stdout)),
+            stderr: detailedResults.some((r) => r.stderr)
+                ? JSON.stringify(detailedResults.map((r) => r.stderr))
                 : null,
-            compileOutput: detailedResults.some((r: any) => r.compile_output)
-                ? JSON.stringify(detailedResults.map((r: any) => r.compile_output))
+            compileOutput: detailedResults.some((r) => r.compile_output)
+                ? JSON.stringify(detailedResults.map((r) => r.compile_output))
                 : null,
             status: allPassed ? "Accepted" : "Wrong Answer",
-            memory: detailedResults.some((r: any) => r.memory)
-                ? JSON.stringify(detailedResults.map((r: any) => r.memory))
+            memory: detailedResults.some((r) => r.memory)
+                ? JSON.stringify(detailedResults.map((r) => r.memory))
                 : null,
-            time: detailedResults.some((r: any) => r.time)
-                ? JSON.stringify(detailedResults.map((r: any) => r.time))
+            time: detailedResults.some((r) => r.time)
+                ? JSON.stringify(detailedResults.map((r) => r.time))
                 : null,
         },
     });
@@ -143,7 +190,7 @@ export const executeCode = async (
         });
     }
 
-    const testCaseResults = detailedResults.map((result: any) => ({
+    const testCaseResults = detailedResults.map((result) => ({
         submissionId: submission.id,
         testCase: result.testCase,
         passed: result.passed,

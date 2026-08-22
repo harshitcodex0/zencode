@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CheckCircle2, XCircle, Clock, Cpu, Code, Calendar } from "lucide-react";
 
-export const SubmissionHistory = ({ submissions = [] }: { submissions?: any[] }) => {
+export const SubmissionHistory = ({ submissions = [] }: { submissions?: unknown[] }) => {
     if (!submissions.length) {
         return (
             <Card className="w-full">
@@ -15,31 +15,31 @@ export const SubmissionHistory = ({ submissions = [] }: { submissions?: any[] })
         );
     }
 
-    const formatMemory = (memory: any) => {
+    const formatMemory = (memory: string | null | undefined) => {
         if (!memory) return 'N/A';
         try {
             const memoryArray = JSON.parse(memory);
-            const avgMemory = memoryArray.reduce((a: any, b: any) => parseFloat(a) + parseFloat(b), 0) / memoryArray.length;
+            const avgMemory = memoryArray.reduce((a: string, b: string) => parseFloat(a) + parseFloat(b), 0) / memoryArray.length;
             return `${avgMemory.toFixed(2)} KB`;
         } catch {
             return 'N/A';
         }
     };
 
-    const formatTime = (time: any) => {
+    const formatTime = (time: string | null | undefined) => {
         if (!time) return 'N/A';
         try {
             const timeArray = JSON.parse(time);
             const avgTime = timeArray
-                .map((t: any) => parseFloat(t.replace(" s", "")))
-                .reduce((a: any, b: any) => a + b, 0) / timeArray.length;
+                .map((t: string) => parseFloat(t.replace(" s", "")))
+                .reduce((a: number, b: number) => a + b, 0) / timeArray.length;
             return `${avgTime.toFixed(3)} s`;
         } catch {
             return 'N/A';
         }
     };
 
-    const formatDate = (dateString: any) => {
+    const formatDate = (dateString: string | Date) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',

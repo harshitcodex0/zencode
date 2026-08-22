@@ -19,7 +19,7 @@ import CreatePlaylistModal from "@/modules/playlists/components/create-playlist"
 import { usePlaylistActions } from "@/modules/playlists/hooks/use-playlist-action";
 import AddToPlaylistModal from "@/modules/playlists/components/add-to-playlist";
 
-const ProblemsTable = ({problems=[] , user}:any) => {
+const ProblemsTable = ({problems=[] , user}: { problems?: any[]; user?: any }) => {
 
     const filters = useProblemFilters(problems);
     const pagination = usePagination(filters.filteredProblems);
@@ -57,7 +57,7 @@ const ProblemsTable = ({problems=[] , user}:any) => {
                         </TableHeader>
                         <TableBody>
                             {pagination.paginatedItems.length > 0 ? (
-                                pagination.paginatedItems.map((problem) => (
+                                pagination.paginatedItems.map((problem: any) => (
                                     <ProblemRow
                                         key={problem.id}
                                         problem={problem}
@@ -90,14 +90,14 @@ const ProblemsTable = ({problems=[] , user}:any) => {
             <CreatePlaylistModal
                 isOpen={playlist.isCreateModalOpen}
                 onClose={playlist.closeCreateModal}
-                onSubmit={playlist.handleCreatePlaylist}
+                onSubmit={async (val) => { await playlist.handleCreatePlaylist(val as any); }}
             />
 
             <AddToPlaylistModal
                 isOpen={playlist.isAddToPlaylistModalOpen}
                 onClose={playlist.closeAddToPlaylistModal}
-                onSubmit={playlist.handleAddToPlaylist}
-                problemId={playlist.selectedProblemId}
+                onSubmit={async (pId, plId) => { await playlist.handleAddToPlaylist(pId, plId); }}
+                problemId={playlist.selectedProblemId || ""}
 
             />
 

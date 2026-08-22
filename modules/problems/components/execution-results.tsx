@@ -4,7 +4,7 @@ import { SubmissionDetails } from "./submission-details";
 import { TestCaseTable } from "./testcase-table";
 
 
-export function ExecutionResults({executionResponse}:any){
+export function ExecutionResults({executionResponse}: { executionResponse: any }){
     if (!executionResponse?.submission) {
         return null;
     }

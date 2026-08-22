@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getDifficultyColor } from "../constant";
 
-export function ProblemHeader({ problem }: any) {
+export function ProblemHeader({ problem }: { problem: any }) {
     return (
         <div className="mb-6 flex items-start justify-between">
             <div>

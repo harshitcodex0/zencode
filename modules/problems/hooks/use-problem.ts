@@ -13,7 +13,7 @@ export function useProblem(id:string){
                 const problemData = await getProblemById(id);
 
                 if(problemData.success){
-                    // @ts-ignore
+                    // @ts-expect-error some error
                     setProblem(problemData.data)
                 }
             } catch (error) {

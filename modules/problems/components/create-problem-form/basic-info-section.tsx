@@ -40,13 +40,15 @@ export function BasicInfoSection({ form }: BasicInfoSectionProps) {
 );
 }
 
+import { Control, UseFormRegister } from "react-hook-form";
+
 interface FieldProps {
-    register: any;
+    register: UseFormRegister<ProblemFormData>;
     error?: any;
 }
 
 interface DifficultyFieldProps {
-    control: any;
+    control: Control<ProblemFormData>;
     error?: any;
 }
 

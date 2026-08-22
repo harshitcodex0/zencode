@@ -2,7 +2,7 @@
 
 
 
-export function ExampleSection({ example , index }:any) {
+export function ExampleSection({ example , index }: { example: { input: string; output: string; explanation?: string }; index: number }) {
     if (!example) return null;
 
     return (

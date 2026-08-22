@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 
 
 const SolvedProblems = ({ solvedProblems = [] }: { solvedProblems: any[] }) => {
-    const formatDate = (dateString: any) => {
+    const formatDate = (dateString: string | Date) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',

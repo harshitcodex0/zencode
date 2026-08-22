@@ -1,11 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
+import { checkRateLimit } from "@/lib/ratelimit";
 
 export async function POST(req: NextRequest) {
     try {
+        const user = await currentUser();
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Rate limiting: 20 AI requests per minute per user
+        const isAllowed = await checkRateLimit(user.id, "AI_REQUEST", 20, 60000);
+        if (!isAllowed) {
+            return NextResponse.json({ error: "Too many requests. Please wait a minute before asking another question." }, { status: 429 });
+        }
+
         const { messages, problemContext } = await req.json();
 
+        // Validate payload existence
         if (!messages || !Array.isArray(messages) || messages.length === 0) {
             return NextResponse.json({ error: "Messages are required" }, { status: 400 });
+        }
+
+        // Limit conversation history to the last 10 messages to prevent unbounded context
+        const recentMessages = messages.slice(-10);
+
+        // Validate message sizes
+        for (const msg of recentMessages) {
+            if (typeof msg.content !== "string" || msg.content.trim() === "") {
+                return NextResponse.json({ error: "Message content must be a non-empty string" }, { status: 400 });
+            }
+            if (msg.content.length > 5000) {
+                return NextResponse.json({ error: "Message exceeds the maximum allowed length of 5000 characters." }, { status: 400 });
+            }
         }
 
         const apiKey = process.env.OPENROUTER_API_KEY;
@@ -46,7 +73,7 @@ ${problemContext ? `\nCONTEXT: The user is currently viewing the problem: ${prob
         // We format messages for OpenRouter
         const openRouterMessages = [
             { role: "system", content: systemPrompt },
-            ...messages.map((msg: any) => ({
+            ...recentMessages.map((msg: { role: string; content: string }) => ({
                 role: msg.role === "user" ? "user" : "assistant",
                 content: msg.content
             }))
@@ -82,7 +109,7 @@ ${problemContext ? `\nCONTEXT: The user is currently viewing the problem: ${prob
             },
         });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("AI Assistant Route Error:", error);
         return NextResponse.json({ error: "An internal server error occurred." }, { status: 500 });
     }

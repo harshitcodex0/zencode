@@ -4,7 +4,7 @@ import { Plus, Trash2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, UseFieldArrayReturn } from "react-hook-form";
 import { z } from "zod";
 import { problemSchema } from "@/modules/problems/schema";
 
@@ -12,7 +12,7 @@ type ProblemFormData = z.infer<typeof problemSchema>;
 
 interface TagsSectionProps {
     form: UseFormReturn<ProblemFormData>;
-    tagsArray: any;
+    tagsArray: UseFieldArrayReturn<ProblemFormData, "tags">;
 }
 
 export function TagsSection({ form, tagsArray }: TagsSectionProps) {
@@ -34,7 +34,7 @@ export function TagsSection({ form, tagsArray }: TagsSectionProps) {
                     <Button
                         type="button"
                         size="sm"
-                        onClick={() => append("")}
+                        onClick={() => append({ value: "" })}
                         className="gap-2"
                     >
                         <Plus className="w-4 h-4" /> Add Tag
@@ -43,7 +43,7 @@ export function TagsSection({ form, tagsArray }: TagsSectionProps) {
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {fields.map((field: any, index: number) => (
+                    {fields.map((field, index) => (
                         <TagItem
                             key={field.id}
                             index={index}
@@ -63,7 +63,7 @@ export function TagsSection({ form, tagsArray }: TagsSectionProps) {
 
 interface TagItemProps {
     index: number;
-    register: any;
+    register: UseFormReturn<ProblemFormData>["register"];
     onRemove: () => void;
     canRemove: boolean;
 }
@@ -72,7 +72,7 @@ function TagItem({ index, register, onRemove, canRemove }: TagItemProps) {
     return (
         <div className="flex gap-2 items-center">
             <Input
-                {...register(`tags.${index}`)}
+                {...register(`tags.${index}.value`)}
                 placeholder="Enter tag"
                 className="flex-1"
             />

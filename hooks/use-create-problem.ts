@@ -28,16 +28,22 @@ export function useCreateProblem() {
 
     const tagsArray = useFieldArray({
         control: form.control,
-        name: "tags" as any,
-    }) as any;
+        name: "tags" as const,
+    });
 
     const onSubmit = async (values: ProblemFormData) => {
         try {
             setIsLoading(true);
+            // tags are stored as { value: string }[] in the form for useFieldArray compatibility
+            // map them back to plain strings before sending to the API
+            const payload = {
+                ...values,
+                tags: values.tags.map((t) => t.value),
+            };
             const response = await fetch("/api/create-problem", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values),
+                body: JSON.stringify(payload),
             });
 
             const data = await response.json();
@@ -49,8 +55,8 @@ export function useCreateProblem() {
             }
         } catch (error) {
             console.error("Error creating problems:", error);
-            // @ts-ignore
-            toast.error(error.message || "Failed to create problems");
+            // @ts-expect-error Error type is unknown but might have message
+            toast.error(error?.message || "Failed to create problems");
         } finally {
             setIsLoading(false);
         }
@@ -59,10 +65,12 @@ export function useCreateProblem() {
     const loadSampleData = () => {
         const sampleData =
             SAMPLE_PROBLEMS[sampleType as keyof typeof SAMPLE_PROBLEMS];
-        tagsArray.replace(sampleData.tags);
+        // Sample data has tags as string[], convert to object shape for useFieldArray
+        const tagsAsObjects = (sampleData.tags as string[]).map((t: string) => ({ value: t }));
+        tagsArray.replace(tagsAsObjects);
         testCasesArray.replace(sampleData.testCases);
 
-        form.reset(sampleData as any);
+        form.reset({ ...sampleData, tags: tagsAsObjects } as unknown as ProblemFormData);
     };
 
     return {

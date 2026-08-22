@@ -13,7 +13,15 @@ export function ProblemsPagination({
                                        canGoNext,
                                        onPrevious,
                                        onNext,
-                                   }:any) {
+                                   }: {
+                                       currentPage: number;
+                                       totalPages: number;
+                                       displayRange: { start: number; end: number; total: number };
+                                       canGoPrevious: boolean;
+                                       canGoNext: boolean;
+                                       onPrevious: () => void;
+                                       onNext: () => void;
+                                   }) {
     return (
         <div className="flex items-center justify-between">
             {/* Results count */}

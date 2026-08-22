@@ -68,7 +68,7 @@ const ProblemIdPage = () => {
                             isSubmitting={isSubmitting}
                         />
 
-                        {/* @ts-ignore */}
+                        {/* @ts-expect-error */}
                         <TestCasesPanel testCases={problem.testCases} />
 
                         {/* TODO: Execution result */}

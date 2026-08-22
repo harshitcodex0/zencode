@@ -1,9 +1,13 @@
 import { currentUserRole } from '@/modules/auth/actions'
 import { Navbar } from '@/modules/home/components/Navbar'
+import { UserRole } from '@/lib/generated/prisma/enums'
 import React from 'react'
 
 const RootLayout = async({children}:{children:React.ReactNode}) => {
-    const userRole = await currentUserRole();
+    const rawRole = await currentUserRole();
+    // currentUserRole can return an error object shape — only pass through valid enum values
+    const userRole: UserRole | undefined =
+        typeof rawRole === 'string' ? rawRole as UserRole : undefined;
     return (
         <main className='flex flex-col min-h-screen'>
             <Navbar userRole={userRole}/>
