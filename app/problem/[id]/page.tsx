@@ -3,7 +3,6 @@ import React from "react";
 import { useParams } from "next/navigation";
 import { useProblem } from "@/modules/problems/hooks/use-problem";
 import { Spinner } from "@/components/ui/spinner";
-import { ProblemsHeader } from "@/modules/problems/components/problems-header";
 import { ProblemHeader } from "@/modules/problems/components/problem-header";
 import { ProblemDescription } from "@/modules/problems/components/problem-description";
 import { ProblemTabs } from "@/modules/problems/components/problem-tabs";
@@ -68,7 +67,7 @@ const ProblemIdPage = () => {
                             isSubmitting={isSubmitting}
                         />
 
-                        {/* @ts-expect-error */}
+                        {/* @ts-expect-error ignore test cases type mismatch */}
                         <TestCasesPanel testCases={problem.testCases} />
 
                         {/* TODO: Execution result */}

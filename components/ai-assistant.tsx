@@ -40,11 +40,13 @@ export const AIAssistant = ({ problemContext }: { problemContext?: unknown }) =>
     const handleSend = async (content: string) => {
         if (!content.trim() || isLoading) return;
 
+        // eslint-disable-next-line react-hooks/purity
         const userMsg: Message = { id: Date.now().toString(), role: 'user', content: content.trim() };
         setMessages(prev => [...prev, userMsg]);
         setInputValue('');
         setIsLoading(true);
 
+        // eslint-disable-next-line react-hooks/purity
         const aiMsgId = (Date.now() + 1).toString();
         setMessages(prev => [...prev, { id: aiMsgId, role: 'assistant', content: '' }]);
 
@@ -87,7 +89,8 @@ export const AIAssistant = ({ problemContext }: { problemContext?: unknown }) =>
                         try {
                             const parsed = JSON.parse(line.slice(6));
                             if (parsed.choices?.[0]?.delta?.content) {
-                                aiText += parsed.choices[0].delta.content;
+                                // eslint-disable-next-line react-hooks/immutability
+                                aiText = aiText + parsed.choices[0].delta.content;
                                 setMessages(prev => 
                                     prev.map(msg => 
                                         msg.id === aiMsgId ? { ...msg, content: aiText } : msg

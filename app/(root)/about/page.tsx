@@ -29,7 +29,7 @@ const AboutPage = () => {
                     <div className="space-y-6">
                         <h2 className="text-3xl font-bold">What is ZenCode?</h2>
                         <p className="text-muted-foreground text-lg leading-relaxed">
-                            Solving a coding problem isn't just about getting a green "Accepted" badge. It's about the journey of arriving at that solution.
+                            Solving a coding problem isn&apos;t just about getting a green &quot;Accepted&quot; badge. It&apos;s about the journey of arriving at that solution.
                         </p>
                         <p className="text-muted-foreground text-lg leading-relaxed">
                             At ZenCode, we believe that understanding the inefficiencies of a brute-force approach is the key to discovering the optimal solution. We emphasize time and space complexity analysis so you write code that is not only correct, but highly efficient.
@@ -90,7 +90,7 @@ const AboutPage = () => {
                             <CardHeader>
                                 <Cpu className="w-8 h-8 text-purple-500 mb-2" />
                                 <CardTitle>Complexity Analysis</CardTitle>
-                                <CardDescription>Learn to evaluate your code's time and space complexity with confidence.</CardDescription>
+                                <CardDescription>Learn to evaluate your code&apos;s time and space complexity with confidence.</CardDescription>
                             </CardHeader>
                         </Card>
                     </div>
@@ -99,8 +99,8 @@ const AboutPage = () => {
                 {/* Learning Philosophy Quote */}
                 <section className="py-12 text-center">
                     <blockquote className="text-2xl md:text-3xl font-medium italic text-muted-foreground leading-relaxed">
-                        "Don't just memorize solutions. <br />
-                        <span className="text-foreground not-italic font-bold">Understand how to arrive at them.</span>"
+                        &quot;Don&apos;t just memorize solutions. <br />
+                        <span className="text-foreground not-italic font-bold">Understand how to arrive at them.</span>&quot;
                     </blockquote>
                 </section>
 
