@@ -1,7 +1,6 @@
 //This code will prevent a lot of connections to happen and online one connection will be created
 // and will be in use.
 
-import {getPrismaClient} from "@prisma/client/runtime/client";
 import { PrismaClient } from "@/lib/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
