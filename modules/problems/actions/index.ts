@@ -2,9 +2,9 @@
 import { prisma } from "@/lib/db";
 import { UserRole } from "@/lib/generated/prisma/enums";
 import { getLanguageName, pollBatchResults, submitBatch } from "@/lib/judge0";
+import { Judge0Result, judgeTestCase, parseStoredTestCases, summarizeVerdict } from "@/lib/judging";
 import { getCurrentUserData } from "@/modules/auth/actions";
 import { currentUser } from "@clerk/nextjs/server";
-import { success } from "zod";
 
 export const getAllProblems = async () => {
     try {
@@ -52,8 +52,6 @@ import { checkRateLimit } from "@/lib/ratelimit";
 export const executeCode = async (
     source_code: string,
     language_id: number,
-    stdin: string[],
-    expected_outputs: string[],
     id: string,
 ) => {
     const user = await getCurrentUserData();
@@ -69,30 +67,33 @@ export const executeCode = async (
     }
 
     // Payload Validation
-    if (!source_code || source_code.length > 10000) {
-        return { success: false, error: "Source code exceeds the maximum limit of 10,000 characters." };
+    if (typeof source_code !== "string" || !source_code.trim() || source_code.length > 10000) {
+        return { success: false, error: "Source code is empty or exceeds the maximum limit of 10,000 characters." };
     }
-    
+
     if (![91, 92, 93].includes(language_id)) {
         return { success: false, error: "Unsupported language." };
     }
 
-    if (
-        !Array.isArray(stdin) ||
-        stdin.length === 0 ||
-        stdin.length > 50 ||
-        !Array.isArray(expected_outputs) ||
-        expected_outputs.length !== stdin.length
-    ) {
-        return { success: false, error: "Invalid or too many test cases (max 50)." };
+    // The test cases (inputs AND expected outputs) are always read from the
+    // database. They must never be accepted from the client: otherwise anyone
+    // could submit their own "expected output" and get any code accepted.
+    const problem = await prisma.problem.findUnique({
+        where: { id },
+        select: { testCases: true },
+    });
+
+    if (!problem) {
+        return { success: false, error: "Problem not found" };
     }
 
-    // Validate size of individual test cases
-    for (const input of stdin) {
-        if (typeof input !== "string" || input.length > 5000) {
-            return { success: false, error: "A test case input exceeds 5000 characters." };
-        }
+    const testCases = parseStoredTestCases(problem.testCases);
+    if (!testCases || testCases.length > 50) {
+        return { success: false, error: "This problem has no valid test cases." };
     }
+
+    const stdin = testCases.map((tc) => tc.input);
+    const expected_outputs = testCases.map((tc) => tc.output);
 
     const submissions = stdin.map((input) => ({
         source_code,
@@ -101,16 +102,6 @@ export const executeCode = async (
         base64_encoded: false,
         wait: false,
     }));
-
-    type Judge0Result = {
-        token: string;
-        stdout?: string | null;
-        stderr?: string | null;
-        compile_output?: string | null;
-        status: { id: number; description: string };
-        memory?: number | null;
-        time?: string | null;
-    };
 
     type DetailedResult = {
         testCase: number;
@@ -124,33 +115,37 @@ export const executeCode = async (
         time: string | undefined;
     };
 
-    const submitResponse = await submitBatch(submissions);
+    let results: Judge0Result[];
+    try {
+        const submitResponse = await submitBatch(submissions);
 
-    const tokens = submitResponse.map((res: Judge0Result) => res.token);
+        if (!Array.isArray(submitResponse) || submitResponse.length !== submissions.length) {
+            console.error("Unexpected Judge0 batch response:", submitResponse);
+            return { success: false, error: "Code execution service rejected the submission. Please try again." };
+        }
 
-    const results = await pollBatchResults(tokens);
+        const tokens = submitResponse.map((res: Judge0Result) => res.token as string);
+        results = await pollBatchResults(tokens);
+    } catch (error) {
+        console.error("Judge0 execution failed:", error);
+        return { success: false, error: "Code execution service is unavailable. Please try again." };
+    }
 
-    let allPassed = true;
+    const verdicts = results.map((result, i) => judgeTestCase(result, expected_outputs[i] ?? ""));
+    const allPassed = verdicts.length === testCases.length && verdicts.every((v) => v.passed);
+    const overallStatus = summarizeVerdict(results, verdicts);
 
-    const detailedResults: DetailedResult[] = results.map((result: Judge0Result, i: number) => {
-        const stdout = result.stdout?.trim() || null;
-        const expected_output = expected_outputs[i]?.trim() ?? "";
-        const passed = stdout === expected_output;
-
-        if (!passed) allPassed = false;
-
-        return {
-            testCase: i + 1,
-            passed,
-            stdout,
-            expected: expected_output,
-            stderr: result.stderr || null,
-            compile_output: result.compile_output || null,
-            status: result.status.description,
-            memory: result.memory ? `${result.memory} KB` : undefined,
-            time: result.time ? `${result.time} s` : undefined,
-        };
-    });
+    const detailedResults: DetailedResult[] = results.map((result, i) => ({
+        testCase: i + 1,
+        passed: verdicts[i].passed,
+        stdout: verdicts[i].stdout,
+        expected: verdicts[i].expected,
+        stderr: result.stderr || null,
+        compile_output: result.compile_output || null,
+        status: verdicts[i].status,
+        memory: result.memory ? `${result.memory} KB` : undefined,
+        time: result.time ? `${result.time} s` : undefined,
+    }));
 
     const submission = await prisma.submission.create({
         data: {
@@ -166,7 +161,7 @@ export const executeCode = async (
             compileOutput: detailedResults.some((r) => r.compile_output)
                 ? JSON.stringify(detailedResults.map((r) => r.compile_output))
                 : null,
-            status: allPassed ? "Accepted" : "Wrong Answer",
+            status: overallStatus,
             memory: detailedResults.some((r) => r.memory)
                 ? JSON.stringify(detailedResults.map((r) => r.memory))
                 : null,

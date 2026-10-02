@@ -18,7 +18,7 @@ export function ProblemDescription({ problem, selectedLanguage }: { problem: any
 
             <CardContent>
                 <div className="space-y-6">
-                    <p className="text-foreground leading-relaxed">
+                    <p className="text-foreground leading-relaxed whitespace-pre-line">
                         {problem?.description}
                     </p>
                     {

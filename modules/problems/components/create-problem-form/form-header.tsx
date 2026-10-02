@@ -2,7 +2,16 @@
 import { FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { getBankSampleGroups } from "@/modules/problems/problem-bank";
 
 export function FormHeader({ sampleType, setSampleType, onLoadSample }: { sampleType: string; setSampleType: (val: string) => void; onLoadSample: () => void }) {
     return (
@@ -14,7 +23,7 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: { sample
                 </CardTitle>
 
                 <div className="flex flex-col md:flex-row gap-3">
-                    <SampleTypeToggle
+                    <SamplePicker
                         sampleType={sampleType}
                         setSampleType={setSampleType}
                     />
@@ -34,27 +43,32 @@ export function FormHeader({ sampleType, setSampleType, onLoadSample }: { sample
     );
 }
 
-function SampleTypeToggle({ sampleType, setSampleType }: { sampleType: string; setSampleType: (val: string) => void }) {
+function SamplePicker({ sampleType, setSampleType }: { sampleType: string; setSampleType: (val: string) => void }) {
+    const groups = getBankSampleGroups();
+
     return (
-        <div className="flex border rounded-md">
-            <Button
-                type="button"
-                variant={sampleType === "DP" ? "default" : "outline"}
-                size="sm"
-                className="rounded-r-none"
-                onClick={() => setSampleType("DP")}
-            >
-                DP Problem
-            </Button>
-            <Button
-                type="button"
-                variant={sampleType === "string" ? "default" : "outline"}
-                size="sm"
-                className="rounded-l-none"
-                onClick={() => setSampleType("string")}
-            >
-                String Problem
-            </Button>
-        </div>
+        <Select value={sampleType} onValueChange={setSampleType}>
+            <SelectTrigger size="sm" className="w-full md:w-72">
+                <SelectValue placeholder="Choose a sample problem" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectGroup>
+                    <SelectLabel>Starter samples</SelectLabel>
+                    <SelectItem value="DP">Climbing Stairs (DP)</SelectItem>
+                    <SelectItem value="string">Valid Palindrome (String)</SelectItem>
+                </SelectGroup>
+                {groups.map((group) => (
+                    <SelectGroup key={group.topic}>
+                        <SelectLabel>{group.topic}</SelectLabel>
+                        {group.options.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                                {option.difficulty ? ` - ${option.difficulty.toLowerCase()}` : ""}
+                            </SelectItem>
+                        ))}
+                    </SelectGroup>
+                ))}
+            </SelectContent>
+        </Select>
     );
 }

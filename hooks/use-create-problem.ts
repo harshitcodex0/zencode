@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { defaultFormValues, problemSchema } from "@/modules/problems/schema";
 import { SAMPLE_PROBLEMS } from "@/modules/problems/constant/sample-problem";
+import { getBankProblemRecord } from "@/modules/problems/problem-bank";
 import { z } from "zod";
 
 type ProblemFormData = z.infer<typeof problemSchema>;
@@ -52,6 +53,9 @@ export function useCreateProblem() {
             if (data.success) {
                 toast.success("Problem created successfully");
                 router.push("/problems");
+            } else {
+                // e.g. a reference solution failed Judge0 validation - tell the admin instead of silently doing nothing
+                toast.error(data.error || "Failed to create problem");
             }
         } catch (error) {
             console.error("Error creating problems:", error);
@@ -63,8 +67,14 @@ export function useCreateProblem() {
     };
 
     const loadSampleData = () => {
+        // "DP" / "string" are the original samples; any other value is a problem-bank slug.
         const sampleData =
-            SAMPLE_PROBLEMS[sampleType as keyof typeof SAMPLE_PROBLEMS];
+            SAMPLE_PROBLEMS[sampleType as keyof typeof SAMPLE_PROBLEMS] ??
+            getBankProblemRecord(sampleType);
+        if (!sampleData) {
+            toast.error("Sample problem not found");
+            return;
+        }
         // Sample data has tags as string[], convert to object shape for useFieldArray
         const tagsAsObjects = (sampleData.tags as string[]).map((t: string) => ({ value: t }));
         tagsArray.replace(tagsAsObjects);

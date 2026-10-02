@@ -182,6 +182,21 @@ OPENROUTER_MODEL=google/gemini-2.5-flash
 | `pnpm prisma migrate dev` | Create and apply a new migration |
 | `pnpm prisma studio` | Open the Prisma visual database browser |
 | `pnpm prisma generate` | Regenerate the Prisma client after schema changes |
+| `pnpm verify:problems` | Audit the built-in problem bank: runs every reference solution (JS/Python/Java), starter code and a deliberately wrong solution through the same judging code the site uses |
+
+### Built-in problem bank
+
+`modules/problems/problem-bank/` contains 45 ready-made problems: 5 each for **String, Array, 2D Array, Sliding Window, Linked List, Doubly Linked List, Stack, Queue and Graph**. Each problem is a small spec (statement, test cases, and a reference solution per language); `builder.ts` generates the starter code, the stdin/stdout harness and the reference solutions for JavaScript, Python and Java.
+
+They are added the same way as every other problem: sign in as an `ADMIN`, open **Create Problem**, pick a problem in the sample dropdown (grouped by topic), click **Load Sample** and then **Create Problem**. `/api/create-problem` validates the reference solutions on Judge0 before inserting into the database. Nothing is written until you click Create.
+
+```bash
+pnpm verify:problems   # offline audit: correct code => Accepted, wrong/empty code => rejected
+```
+
+`verify:problems` needs `node`, `python` and a JDK (`javac`, `java`) on your PATH (use `-- --skip-java` without a JDK).
+
+Submissions are judged server-side against the test cases stored in the database (`executeCode` never trusts client-supplied expected outputs). A test case passes only if the program ran cleanly (no compile/runtime error or timeout) **and** its output matches the expected output (line endings and trailing spaces are ignored).
 
 ---
 

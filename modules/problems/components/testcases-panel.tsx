@@ -34,11 +34,11 @@ function TestCaseItem({ testCase, index }: { testCase: any; index: number }) {
             <div className="space-y-1 text-sm">
                 <div>
                     <span className="text-muted-foreground">Input: </span>
-                    <code className="bg-muted px-2 py-1 rounded text-xs">{testCase.input}</code>
+                    <code className="bg-muted px-2 py-1 rounded text-xs whitespace-pre-wrap">{testCase.input}</code>
                 </div>
                 <div>
                     <span className="text-muted-foreground">Expected: </span>
-                    <code className="bg-muted px-2 py-1 rounded text-xs">{testCase.output}</code>
+                    <code className="bg-muted px-2 py-1 rounded text-xs whitespace-pre-wrap">{testCase.output}</code>
                 </div>
             </div>
         </div>

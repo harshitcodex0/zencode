@@ -11,13 +11,13 @@ export function ExampleSection({ example , index }: { example: { input: string; 
             <div className="bg-muted p-4 rounded-lg space-y-2">
                 <div>
                     <span className="font-medium text-amber-400">Input: </span>
-                    <code className="text-sm dark:bg-zinc-900 bg-zinc-200 text-zinc-900 dark:text-zinc-200 px-2 py-1 rounded">
+                    <code className="text-sm dark:bg-zinc-900 bg-zinc-200 text-zinc-900 dark:text-zinc-200 px-2 py-1 rounded whitespace-pre-wrap">
                         {example.input}
                     </code>
                 </div>
                 <div>
                     <span className="font-medium text-amber-400">Output: </span>
-                    <code className="text-sm dark:bg-zinc-900 bg-zinc-200 text-zinc-900 dark:text-zinc-200 px-2 py-1 rounded">
+                    <code className="text-sm dark:bg-zinc-900 bg-zinc-200 text-zinc-900 dark:text-zinc-200 px-2 py-1 rounded whitespace-pre-wrap">
                         {example.output}
                     </code>
                 </div>
